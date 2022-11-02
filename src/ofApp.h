@@ -1,6 +1,9 @@
 #pragma once
 
 #include "ofMain.h"
+#include  "ofxAssimpModelLoader.h"
+#include "box.h"
+#include "ray.h"
 
 class ofApp : public ofBaseApp{
 
@@ -20,5 +23,41 @@ class ofApp : public ofBaseApp{
 		void windowResized(int w, int h);
 		void dragEvent(ofDragInfo dragInfo);
 		void gotMessage(ofMessage msg);
+		void drawAxis(ofVec3f);
+		void initLightingAndMaterials();
+		void savePicture();
+		void toggleWireframeMode();
+		void togglePointsDisplay();
+		void toggleSelectTerrain();
+		void setCameraTarget();
+		glm::vec3 getMousePointOnPlane();
+		void drawBox(const Box &box);
+		Box meshBounds(const ofMesh &);
 		
+
+		ofEasyCam cam;
+		ofCamera top;
+		ofCamera *theCam;
+		ofxAssimpModelLoader terrain, lander;
+		ofLight light;
+		Box boundingBox;
+		Box landerBounds;
+	
+		bool bAltKeyDown;
+		bool bCtrlKeyDown;
+		bool bWireframe;
+		bool bDisplayPoints;
+		bool bPointSelected;
+		
+		bool bLanderLoaded = false;
+		bool bTerrainSelected;
+		bool bLanderSelected = false;
+	
+		ofVec3f selectedPoint;
+		ofVec3f intersectPoint;
+		
+		glm::vec3 mouseDownPos;
+
+
+		const float selectionRange = 4.0;
 };
