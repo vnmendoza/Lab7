@@ -57,7 +57,8 @@ class ofApp : public ofBaseApp{
 		ofVec3f intersectPoint;
 		
 		glm::vec3 mouseDownPos;
-
+		glm::vec3 camPos,normalVec;
+		glm::vec3 displacement,currMousePos;
 
 		const float selectionRange = 4.0;
 };

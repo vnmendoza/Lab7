@@ -20,8 +20,9 @@
 //
 //  Kevin Smith   10-20-19
 //
-//  Student Name:   < Your Name goes Here >
-//  Date: <date of last version>
+//  Student Name:   Victor Mendoza
+//  Date: 11/4/2022
+// Canvas - https://sjsu.instructure.com/courses/1485304/assignments/6397604
 
 
 #include "ofApp.h"
@@ -129,6 +130,8 @@ void ofApp::draw(){
 	ofNoFill();
 	ofSetColor(ofColor::white);
 	drawBox(boundingBox);
+
+	ofDrawLine(camPos, normalVec);
 
 	theCam->end();
 
@@ -264,10 +267,32 @@ void ofApp::mousePressed(int x, int y, int button) {
 
 	// if moving camera, don't allow mouse interaction
 	//
+
 	if (cam.getMouseInputEnabled()) return;
 
 	//  implement you code here to select the rover
 	//  if Selected, draw box in a different color
+	
+	glm::vec3 origin = theCam->getPosition();
+	glm::vec3 mouseWorld = theCam->screenToWorld(glm::vec3(mouseX, mouseY, 0));
+	glm::vec3 mouseDir = glm::normalize(mouseWorld - origin);
+
+	Vector3 camPosition = Vector3(origin.x, origin.y, origin.z);
+	Vector3 normalVector = Vector3(mouseDir.x, mouseDir.y, mouseDir.z);
+
+	Ray myRay = Ray(camPosition, normalVector);
+	if (landerBounds.intersect(myRay, 0, 100000))
+	{
+		cout << "hit\n";
+		bLanderSelected = true;
+		currMousePos = getMousePointOnPlane();
+		displacement = lander.getPosition() - currMousePos;
+	}
+	else
+	{
+		cout << "miss\n";
+		bLanderSelected = false;
+	}
 
 }
 
@@ -283,7 +308,13 @@ void ofApp::drawBox(const Box &box) {
 	float w = size.x();
 	float h = size.y();
 	float d = size.z();
+	ofPushMatrix();
+	if (bLanderSelected)
+		ofSetColor(ofColor::red);
+	else
+		ofSetColor(ofColor::white);
 	ofDrawBox(p, w, h, d);
+	ofPopMatrix();
 }
 
 // return a Mesh Bounding Box for the entire Mesh
@@ -315,12 +346,19 @@ void ofApp::mouseDragged(int x, int y, int button) {
 
 	// 
 	//  implement your code here to drag the lander around
+	if (bLanderSelected)
+	{
+		glm::vec3 pos = getMousePointOnPlane() + displacement;
+		//currMousePos - displacement
+		lander.setPosition(pos.x,pos.y,pos.z);
+	}
 
 }
 
 //--------------------------------------------------------------
 void ofApp::mouseReleased(int x, int y, int button) {
 
+	bLanderSelected = false;
 }
 
 
