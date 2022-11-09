@@ -107,8 +107,13 @@ void ofApp::draw(){
 			Box bounds = Box(Vector3(min.x, min.y, min.z), Vector3(max.x, max.y, max.z));
 
 			landerBounds = bounds;
-
+			ofPushMatrix();
+			if (bLanderSelected)
+				ofSetColor(ofColor::red);
+			else
+				ofSetColor(ofColor::white);
 			drawBox(bounds);
+			ofPopMatrix();
 		}
 		if (bTerrainSelected) drawAxis(ofVec3f(0, 0, 0));
 	}
@@ -286,6 +291,7 @@ void ofApp::mousePressed(int x, int y, int button) {
 		cout << "hit\n";
 		bLanderSelected = true;
 		currMousePos = getMousePointOnPlane();
+		//currMousePos = rayIntersectPlane()
 		displacement = lander.getPosition() - currMousePos;
 	}
 	else
@@ -308,13 +314,8 @@ void ofApp::drawBox(const Box &box) {
 	float w = size.x();
 	float h = size.y();
 	float d = size.z();
-	ofPushMatrix();
-	if (bLanderSelected)
-		ofSetColor(ofColor::red);
-	else
-		ofSetColor(ofColor::white);
+
 	ofDrawBox(p, w, h, d);
-	ofPopMatrix();
 }
 
 // return a Mesh Bounding Box for the entire Mesh
